@@ -1,0 +1,23 @@
+html{
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family: "Inconsolata";
+    margin: 0 auto;
+    width: %100;
+}
+
+#adventure_prompt{
+    margin: 0 auto;
+    width: 800px;
+    padding: 50px;
+    text-align: center;
+}
+
+#adventure_input{
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
