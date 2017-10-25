@@ -168,6 +168,7 @@ io.on('connection', function(socket){
 
   socket.on('progress adventure', function(val){
     if ( isInArray(val, keyWords) == true){
+
       for (var i = 0; i < flowChart.length; i++){
         if( val == flowChart[i].group){
           io.emit('adventures', flowChart[i].topic);
