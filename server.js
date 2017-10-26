@@ -10,7 +10,9 @@ var io = require("socket.io")(http);
 var row,
   rows = [];
 var flowChart = [];
-var keyWords = [];
+var keyWords = []; //keyWords should always by the groups, and then the topics included in it
+var name = "";
+var adventurePrompt = "You find yourself sitting at a table in a smoky room, a psychic taking his place on the other end. A crystal ball partially blocks your view of the mysterious mystic, prompting you to comment on the stereotypical nature of the whole set up when he interrupts, 'Who are you?'";
 
 //Each instance of the helpFlow class is a line of help.
 //The group is what group the user belongs in. The topic is
@@ -88,24 +90,25 @@ function listFlowChart(auth) {
       for (var i = 0; i < rows.length; i++) {
           row = rows[i];
           flowChart.push(new helpFlow(row[0], row[1], [row[2], row[3], row[4]], row[5], row[6]));
-          keyWords.push(row[0], row[1]);
+          keyWords.push(row[0]);
           cleanObject(flowChart[i]);
         }
-        keyWords = keyWordPopulator(keyWords);
+        keyWords = arrayDuplicateRemover(keyWords);
         console.log(keyWords);
     }
   });
 }
 
-function isInArray(value, array){
-  return array.indexOf(value) > -1;
+//Checks if a value is an array
+function isInArray(val, array){
+  return array.indexOf(val) > -1;
 }
 
-//populates an array with keywords that are needed for the choose your own adventure
-function keyWordPopulator(arr){
+//Populates an array with keywords that are needed for the choose your own adventure
+function arrayDuplicateRemover(arr){
   arr.sort();
   for ( var i = arr.length; i > 0; i--){
-    if ( arr[i] == arr[i-1]){
+    if ( arr[i] == arr[i-1] ){
       arr.splice(i,1);
     }
    }
@@ -146,40 +149,46 @@ app.use(express.static(__dirname + '/public'));
 app.set("views", __dirname + '/views');
 app.set('view engine', 'html');
 
-
 //Start the server listening on port 1337 (l33thaxxor)
 http.listen(1337, function(){
   console.log("Server has started listening on PORT 1337 COMMANDAH!");
   getAdventures();
 });
 
-//What to do on connection? Probably just serve the array of objects.
 io.on('connection', function(socket){
   //initial connection
   console.log('CONNECTION ACCOMPLISHED');
-  if ( flowChart.length == 0){
+  if ( flowChart.length == 0 ){
     console.log("No data found");
   }else{
-    for (var i = 0; i < flowChart.length; i++){
-      io.emit('adventures', flowChart[i].group);
-    }
+    io.emit('adventures', true, adventurePrompt);
   }
 
-
   socket.on('progress adventure', function(val){
-    if ( isInArray(val, keyWords) == true){
-
-      for (var i = 0; i < flowChart.length; i++){
-        if( val == flowChart[i].group){
-          io.emit('adventures', flowChart[i].topic);
-        }else if( val == flowChart[i].topic){
-          io.emit('adventures', flowChart[i].names);
+    if (isInArray(val, keyWords) == true ){
+      keyWords = [];
+      for ( var i = 0; i <flowChart.length; i++ ){
+        if( val == flowChart[i].group ){
+          keyWords.push(flowChart[i].topic);
+        }else if( val == flowChart[i].topic ){
+          keyWords.push(flowChart[i].names);
         }
       }
+      keyWords = arrayDuplicateRemover(keyWords);
+      io.emit('adventures', keyWords, adventurePrompt);
     }else{
-      io.emit('adventures', 0);
+      io.emit('adventures', false, adventurePrompt);
     }
+    console.log(keyWords);
   });
+
+  // socket.on('name', function(val){
+  //   name = val;
+  //   adventurePrompt = "'Hello " + name + "'";
+  //   console.log(adventurePrompt);
+  //   io.emit('adventures', keyWords, adventurePrompt)
+  //   console.log(name);
+  // });
 
   socket.on("disconnect",function(){
     console.log("User disconnected");

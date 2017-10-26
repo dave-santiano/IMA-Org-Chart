@@ -1,6 +1,7 @@
 html{
     margin:0;
     padding:0;
+    background-color: black;
 }
 
 body{
@@ -13,11 +14,13 @@ body{
     margin: 0 auto;
     width: 800px;
     padding: 50px;
-    text-align: center;
+    color: white;
+    text-align: left;
 }
 
 #adventure_input{
     margin: 0 auto;
     text-align: center;
     width: 100%;
+    color: white;
 }
