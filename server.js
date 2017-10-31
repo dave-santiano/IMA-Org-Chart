@@ -12,7 +12,7 @@ var row,
 var flowChart = [];
 var keyWords = []; //keyWords should always by the groups, and then the topics included in it
 var name = "";
-var adventurePrompt = "You find yourself sitting at a table in a smoky room, a psychic taking his place on the other end. A crystal ball partially blocks your view of the mysterious mystic, prompting you to comment on the stereotypical nature of the whole set up when he interrupts, 'Who are you?'";
+var adventurePrompt = "";
 
 //Each instance of the helpFlow class is a line of help.
 //The group is what group the user belongs in. The topic is
@@ -160,17 +160,29 @@ io.on('connection', function(socket){
   console.log('CONNECTION ACCOMPLISHED');
   if ( flowChart.length == 0 ){
     console.log("No data found");
-  }else{
-    io.emit('adventures', true, adventurePrompt);
   }
 
   socket.on('progress adventure', function(val){
-    if (isInArray(val, keyWords) == true ){
+    if ( val == '|'){
+      io.emit('adventures', keyWords);
+    }
+    else if (isInArray(val, keyWords) == true ){
       keyWords = [];
-      for ( var i = 0; i <flowChart.length; i++ ){
+      for ( var i = 0; i < flowChart.length; i++ ){
         if( val == flowChart[i].group ){
+          adventurePrompt = "Ahh I see you are part of the " + val + "." + " What do you have a question about?"
           keyWords.push(flowChart[i].topic);
         }else if( val == flowChart[i].topic ){
+          console.log(val);
+          console.log(flowChart[i]);
+          console.log(flowChart[i].names.length)
+          if (flowChart[i].names.length == 1){
+            adventurePrompt = "You must go to " + flowChart[i].names;
+          } else if(flowChart[i].names.length == 2){
+            adventurePrompt = "You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1];
+          } else if(flowChart[i].names.length == 3){
+            adventurePrompt = "You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". But beware, never go to " + flowChart[i].names[2] + ".";
+          }
           keyWords.push(flowChart[i].names);
         }
       }
@@ -179,18 +191,13 @@ io.on('connection', function(socket){
     }else{
       io.emit('adventures', false, adventurePrompt);
     }
-    console.log(keyWords);
+    // console.log(flowChart);
   });
-
-  // socket.on('name', function(val){
-  //   name = val;
-  //   adventurePrompt = "'Hello " + name + "'";
-  //   console.log(adventurePrompt);
-  //   io.emit('adventures', keyWords, adventurePrompt)
-  //   console.log(name);
-  // });
 
   socket.on("disconnect",function(){
     console.log("User disconnected");
+    keyWords = [];
+    getAdventures();
+
   });
 });

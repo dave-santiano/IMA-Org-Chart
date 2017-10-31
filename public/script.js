@@ -14,7 +14,8 @@ $(document).ready(function(){
     $('form').submit(function(){
         if (firstTime == true){
             name = $('#myinput').val();
-            $(adventurePrompt).append("'Hello " + name +", are you one of the students? Or someone else?'" + '<br>' + '<br>');
+            $(adventurePrompt).append("<br>" + "<br>" + "'Hello " + name +", are you one of the students? Or someone else?'" + '<br>' + '<br>');
+            socket.emit('progress adventure', '|')
             firstTime = false;
         }else{
             socket.emit('progress adventure', $('#myinput').val());
@@ -26,7 +27,9 @@ $(document).ready(function(){
     socket.on('adventures', function(selections, prompt){
         if ( selections != false ){
             awesomplete.list = selections;
-            $(adventurePrompt).append(prompt + '<br>' + '<br>');
+            if( prompt ){
+                $(adventurePrompt).append(prompt + '<br>' + '<br>');
+            }
         }else{
             $(adventurePrompt).append("I don't understand." + '<br>' + '<br>');
         }
