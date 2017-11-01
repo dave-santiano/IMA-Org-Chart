@@ -18,7 +18,19 @@ $(document).ready(function(){
     });
 
     $('form').submit(function(){
-        if (firstTime == true){
+        if ( $('#myinput').val() == "help"){
+            $(adventurePrompt).append("<br>" + "This is a general self-help website designed for IMA in the style of a text-based adventure game. Some useful commands are 'reset', which can be inputted as the shortcut 'r'." + "<br>");
+        }
+
+        else if( $('#myinput').val() == "reset" || $('#myinput').val() == "r" ){
+            if( firstTime == false ){
+                $(adventurePrompt).append("<br>" + "'Hello again " + name +", do you have a different question?'" + '<br>');
+            }else{
+                $(adventurePrompt).append("<br>" + "You find yourself sitting at a table in a smoky room, a psychic taking his place on the other end. A crystal ball partially blocks your view of the mysterious mystic, prompting you to comment on the stereotypical nature of the whole set up when he interrupts, 'What is your name?'" + '<br>');
+            }
+        }
+
+        else if (firstTime == true){
             name = $('#myinput').val();
             $(adventurePrompt).append("<br>" + "'Hello " + name +", are you one of the students? Or someone else?'" + '<br>');
             for ( var i = 0; i < flowChart.length; i++ ){
@@ -48,13 +60,13 @@ $(document).ready(function(){
                 if ( group == flowChart[i].group && topic == flowChart[i].topic){
                     console.log(flowChart[i].website);
                     if ( flowChart[i].names.length == 1 ){
-                        $(adventurePrompt).append("You must go to " + flowChart[i].names + "<br>");
+                        $(adventurePrompt).append("You must first go to " + flowChart[i].names + "<br>");
                       } else if( flowChart[i].names.length == 2 ){
-                        $(adventurePrompt).append("You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + "." + "<br>");
+                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + "." + "<br>");
                       } else if( flowChart[i].names.length == 3 ){
-                        $(adventurePrompt).append("You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "<br>");
+                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "<br>");
                       } else if( flowChart[i].names.length == 4 ){
-                        $(adventurePrompt).append("You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "But, never got to " + flowChart[i].names[3] + "." + "<br>");
+                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "But, never got to " + flowChart[i].names[3] + "." + "<br>");
                       }
                     if ( flowChart[i].website != undefined || flowChart[i].website != null ){
                         $(adventurePrompt).append("<br>" + "For more information go to this website: " + "<a href = '" + flowChart[i].website + "'>" + flowChart[i].website + "</a>" + "<br>");
@@ -63,12 +75,10 @@ $(document).ready(function(){
             }
         }
 
-        else if ( $('#myinput').val() == "help"){
-            $(adventurePrompt).append("This is a general self-help website");
-        }
+
 
         else{
-            $(adventurePrompt).append("I don't understand.");
+            $(adventurePrompt).append("<br>" + "I don't understand." + "<br>");
         }
 
         $('#myinput').val('');
