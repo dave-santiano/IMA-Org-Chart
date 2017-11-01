@@ -2,20 +2,34 @@ html{
     margin:0;
     padding:0;
     background-color: black;
+    color: white;
 }
 
 body{
     font-family: "Inconsolata";
     margin: 0 auto;
-    width: %100;
+    width: 100%;
+}
+
+
+
+h1{
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+a{
+    text-decoration: none;
 }
 
 #adventure_prompt{
     margin: 0 auto;
     width: 800px;
     padding: 50px;
-    color: white;
     text-align: left;
+    font-size: 20px;
 }
 
 #adventure_input{

@@ -10,7 +10,7 @@ var io = require("socket.io")(http);
 var row,
   rows = [];
 var flowChart = [];
-var keyWords = []; //keyWords should always by the groups, and then the topics included in it
+var keyWords = [];
 var name = "";
 var adventurePrompt = "";
 var group;
@@ -51,6 +51,7 @@ function getAdventures(){
     authorize(JSON.parse(content), listFlowChart);
   });
 }
+
 
 //Authorization for the API
 function authorize(credentials, callback) {
@@ -95,7 +96,6 @@ function listFlowChart(auth) {
           cleanObject(flowChart[i]);
         }
         keyWords = arrayDuplicateRemover(keyWords);
-        console.log(keyWords);
     }
   });
 }
@@ -156,53 +156,17 @@ http.listen(1337, function(){
   getAdventures();
 });
 
+//initial connection
 io.on('connection', function(socket){
-  //initial connection
   console.log('CONNECTION ACCOMPLISHED');
+
   if ( flowChart.length == 0 ){
     console.log("No data found");
+  }else{
+    console.log("The flowChart has been sent");
+    io.emit('adventures', flowChart);
   }
-
-  socket.on('progress adventure', function(val){
-    if ( val == '|'){
-      io.emit('adventures', keyWords);
-    }
-    else if (isInArray(val, keyWords) == true ){
-      keyWords = [];
-      for ( var i = 0; i < flowChart.length; i++ ){
-        if( val == flowChart[i].group ){
-          group = val;
-          adventurePrompt = "Ahh I see you are part of the " + group + "." + " What do you have a question about?"
-          // console.log(flowChart[i].topic);
-          keyWords.push(flowChart[i].topic);
-          console.log("HIT ON THE IF");
-        }else if( val == flowChart[i].topic && group == flowChart[i].group ){
-          console.log("HIT ON THE ELSE IF");
-          if ( flowChart[i].names.length == 1 ){
-            adventurePrompt = "You must go to " + flowChart[i].names;
-          } else if( flowChart[i].names.length == 2 ){
-            adventurePrompt = "You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ".";
-          } else if( flowChart[i].names.length == 3 ){
-            adventurePrompt = "You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + ".";
-          } else if( flowChart[i].names.length == 4 ){
-            adventurePrompt = "You must go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "But, never got to " + flowChart[i].names[3] + ".";
-          }
-          keyWords.push(flowChart[i].names);
-        }
-      }
-      keyWords = arrayDuplicateRemover(keyWords);
-      io.emit('adventures', keyWords, adventurePrompt);
-    }else{
-      io.emit('adventures', false, adventurePrompt);
-    }
-    keyWords = arrayDuplicateRemover(keyWords);
-    // console.log(keyWords);
-  });
-
   socket.on("disconnect",function(){
     console.log("User disconnected");
-    keyWords = [];
-    getAdventures();
-
   });
 });
