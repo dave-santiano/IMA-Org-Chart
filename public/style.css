@@ -6,12 +6,10 @@ html{
 }
 
 body{
-    font-family: "Inconsolata";
+    font-family: monospace;
     margin: 0 auto;
-    width: 100%;
+    width: 1000px;
 }
-
-
 
 h1{
     text-align: center;
@@ -24,17 +22,38 @@ a{
     text-decoration: none;
 }
 
+input[type=text] {
+    background: transparent;
+    color:white;
+    list-style: none;
+    font-size: 20px;
+    width:660px;
+    border: none;
+    font-family: monospace;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+}
+
 #adventure_prompt{
     margin: 0 auto;
-    width: 800px;
-    padding: 50px;
+    width: 700px;
     text-align: left;
     font-size: 20px;
 }
 
 #adventure_input{
     margin: 0 auto;
-    text-align: center;
-    width: 100%;
+    padding-top: 20px;
+    text-align: left;
+    width: 700px;
     color: black;
 }
+
+#input_cursor{
+    color:white;
+    display: inline-block;
+    font-weight: 20px;
+}
+

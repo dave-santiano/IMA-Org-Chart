@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h1>Welcome to the IMA Self-Help Text-Adventure! If you need help, just type help and it will come.</h1>
+    <h1>Welcome to the IMA Self-Help Text-Adventure! Don't know how to get started? Type help and hit enter.</h1>
     <br>
     <article id = "adventure_prompt">
         You find yourself sitting in a smoky room. An animatronic psychic of undetermined gender takes their place across from you,
@@ -20,8 +20,10 @@
         your role here at IMA?'
         <br>
     </article>
+
     <form id = "adventure_input" action = "">
-        <input id="myinput" />
+        <div id = "input_cursor">></div>
+        <input type = "text" id="myinput" />
     </form>
 </body>
 </html>
