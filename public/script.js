@@ -10,7 +10,9 @@ $(document).ready(function(){
     var awesomplete = new Awesomplete(input);
     var adventurePrompt = document.getElementById("adventure_prompt");
     var name;
+
     focusOnInput();
+
 
     socket.on('adventures', function(val){
         flowChart = val;
@@ -24,6 +26,7 @@ $(document).ready(function(){
 
 
     $('form').submit(function(){
+
         $(adventurePrompt).append("<br>>>" + $('#myinput').val());
         if ( $('#myinput').val().toLowerCase() == "help"){
             $(adventurePrompt).append("<br>" + "This is a general self-help website designed for IMA in the style of a text-based adventure game. Just start typing and the auto-complete can give you suggestions if you are unsure. Some useful commands are 'reset', which can be inputted as the shortcut 'r'. If you have a suggestion for new topics that can be covered, please submit one here: www.placeholder.gov" + "<br>");
@@ -95,6 +98,7 @@ $(document).ready(function(){
         }else{
             $(adventurePrompt).append("<br>" + "I don't understand." + "<br>");
         }
+        adventurePrompt.scrollTop = adventurePrompt.scrollHeight;
         $('#myinput').val('');
         return false;
     });
