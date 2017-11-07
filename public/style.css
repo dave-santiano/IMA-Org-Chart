@@ -39,6 +39,7 @@ input:focus, textarea:focus {
 #adventure_prompt{
     margin: 0 auto;
     position:fixed;
+    padding-right: 10px;
     width: 700px;
     height: 400px;
     transform: translateX(150px);

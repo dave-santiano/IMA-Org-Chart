@@ -90,7 +90,7 @@ $(document).ready(function(){
             }
             $(adventurePrompt).append("<br>If you have another question, type r and hit enter.");
         }else{
-            $(adventurePrompt).append("<br>" + "I don't understand." + "<br>");
+            $(adventurePrompt).append("<br>" + "'I don't understand." + "<br>");
         }
         //scroll to bottom
         adventurePrompt.scrollTop = adventurePrompt.scrollHeight;
