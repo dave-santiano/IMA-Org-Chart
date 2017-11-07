@@ -13,74 +13,82 @@ $(document).ready(function(){
     var awesomplete = new Awesomplete(input);
     var adventurePrompt = document.getElementById("adventure_prompt");
     var name;
+
     socket.on('adventures', function(val){
         flowChart = val;
+        for ( var i = 0; i < flowChart.length; i++ ){
+            groups.push(flowChart[i].group);
+        }
+        groups = arrayDuplicateRemover(groups);
+        awesomplete.list = groups;
     });
 
+
+
     $('form').submit(function(){
-        if ( $('#myinput').val() == "help"){
-            $(adventurePrompt).append("<br>" + "This is a general self-help website designed for IMA in the style of a text-based adventure game. Some useful commands are 'reset', which can be inputted as the shortcut 'r'." + "<br>");
+        // document.getElementById("adventure_input").scrollIntoView(false);
+        // window.scrollTo(0,document.querySelector("#adventure_input").scrollHeight);
+        $(adventurePrompt).append("<br>>>" + $('#myinput').val());
+
+        if ( $('#myinput').val().toLowerCase() == "help"){
+            $(adventurePrompt).append("<br>" + "This is a general self-help website designed for IMA in the style of a text-based adventure game. Just start typing and the auto-complete can give you suggestions if you are unsure. Some useful commands are 'reset', which can be inputted as the shortcut 'r'. If you have a suggestion for new topics that can be covered, please submit one here: www.placeholder.gov" + "<br>");
         }
 
-        else if( $('#myinput').val() == "reset" || $('#myinput').val() == "r" ){
-            if( firstTime == false ){
-                $(adventurePrompt).append("<br>" + "'Hello again " + name +", do you have a different question?'" + '<br>');
-            }else{
-                $(adventurePrompt).append("<br>" + "You find yourself sitting at a table in a smoky room, a psychic taking his place on the other end. A crystal ball partially blocks your view of the mysterious mystic, prompting you to comment on the stereotypical nature of the whole set up when he interrupts, 'What is your name?'" + '<br>');
-            }
-        }
-
-        else if (firstTime == true){
-            name = $('#myinput').val();
-            $(adventurePrompt).append("<br>" + "'Hello " + name +", are you one of the students? Or someone else?'" + '<br>');
+        else if( $('#myinput').val().toLowerCase() == "reset" || $('#myinput').val().toLowerCase() == "r" ){
+            $(adventurePrompt).append("<br>" + "'Hello again, do you have a different question? Maybe about another group?'" + '<br>');
             for ( var i = 0; i < flowChart.length; i++ ){
                 groups.push(flowChart[i].group);
             }
+            topics = [];
             groups = arrayDuplicateRemover(groups);
+            awesomplete.evaluate();
             awesomplete.list = groups;
-            firstTime = false;
         }
 
-        else if( isInArray($('#myinput').val(), groups) == true){
-            group = $('#myinput').val();
-            $(adventurePrompt).append("<br>" + "'Ahh I see you are part of the " + group + "." + " What do you have a question about?'" + "<br>");
-            for( var i = 0; i < flowChart.length; i++){
+        else if( isInArray($('#myinput').val().toLowerCase(), groups) == true){
+            group = $('#myinput').val().toLowerCase();
+            for( var i = 0; i < flowChart.length; i++ ){
                 if ( group == flowChart[i].group ){
                     topics.push(flowChart[i].topic);
                 }
             }
+            var capitalizedGroup = capitalizeFirstLetter(group);
+            $(adventurePrompt).append("<br>" + "'" + capitalizedGroup + "? Interesting... " + " What do you have a question about?'" + "<br>");
             awesomplete.evaluate();
             awesomplete.list = topics;
         }
 
-        else if( isInArray($('#myinput').val(), topics) == true){
-            topic = $('#myinput').val();
+        else if( isInArray($('#myinput').val().toLowerCase(), topics) == true){
+            topic = $('#myinput').val().toLowerCase();
             $(adventurePrompt).append("<br>" + "'Ahh a question about " + topic + ".'" + "<br>");
+            console.log("group: " + group);
+            console.log("topic: " + topic);
             for( var i = 0; i < flowChart.length; i++){
                 if ( group == flowChart[i].group && topic == flowChart[i].topic){
-                    console.log(flowChart[i].website);
                     if ( flowChart[i].names.length == 1 ){
-                        $(adventurePrompt).append("You must first go to " + flowChart[i].names + "<br>");
+                        $(adventurePrompt).append("'You must go to " + flowChart[i].names + ".'<br>");
                       } else if( flowChart[i].names.length == 2 ){
-                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + "." + "<br>");
+                        $(adventurePrompt).append("'You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ".'<br>");
                       } else if( flowChart[i].names.length == 3 ){
-                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "<br>");
-                      } else if( flowChart[i].names.length == 4 ){
-                        $(adventurePrompt).append("You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + "." + "But, never got to " + flowChart[i].names[3] + "." + "<br>");
+                        $(adventurePrompt).append("'You must first go to " + flowChart[i].names[0] + ". And if they are occupied go to " + flowChart[i].names[1] + ". And finally try " + flowChart[i].names[2] + ".'<br>");
+                      }else{
+                        console.log("No names present.");
                       }
-                    if ( flowChart[i].website != undefined || flowChart[i].website != null ){
+                    if( flowChart[i].neverGoTo != undefined ){
+                        $(adventurePrompt).append("<br>" + "'BUT! Never go to " + flowChart[i].neverGoTo + ".'<br>");
+                    }
+                    if ( flowChart[i].website != undefined ){
                         $(adventurePrompt).append("<br>" + "For more information go to this website: " + "<a href = '" + flowChart[i].website + "'>" + flowChart[i].website + "</a>" + "<br>");
+                        $(adventurePrompt).append("");
                     }
                 }
+            awesomplete.evaluate();
+            awesomplete.list = [];
+            topics = [];
             }
-        }
-
-
-
-        else{
+        }else{
             $(adventurePrompt).append("<br>" + "I don't understand." + "<br>");
         }
-
         $('#myinput').val('');
         return false;
     });
@@ -97,6 +105,10 @@ $(document).ready(function(){
 
     function isInArray(val, array){
       return array.indexOf(val) > -1;
+    }
+
+    function capitalizeFirstLetter(string){
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 });
 

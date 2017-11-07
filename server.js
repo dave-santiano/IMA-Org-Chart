@@ -79,7 +79,7 @@ function listFlowChart(auth) {
   sheets.spreadsheets.values.get({
     auth: auth,
     spreadsheetId: '1f7l3uXyHlUlCR8d-ynxoJ4B49EBXcfrpu3tBWgLMkvs',
-    range: 'Sheet1!2:38',
+    range: 'Sheet1!2:39',
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
@@ -91,7 +91,7 @@ function listFlowChart(auth) {
     } else {
       for (var i = 0; i < rows.length; i++) {
           row = rows[i];
-          flowChart.push(new helpFlow(row[0], row[1], [row[2], row[3], row[4]], row[5], row[6]));
+          flowChart.push(new helpFlow(row[0].toLowerCase(), row[1].toLowerCase(), [row[2], row[3], row[4]], row[5], row[6]));
           keyWords.push(row[0]);
           cleanObject(flowChart[i]);
         }
