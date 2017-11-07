@@ -13,7 +13,6 @@ $(document).ready(function(){
 
     focusOnInput();
 
-
     socket.on('adventures', function(val){
         flowChart = val;
         for ( var i = 0; i < flowChart.length; i++ ){
@@ -22,18 +21,14 @@ $(document).ready(function(){
         groups = arrayDuplicateRemover(groups);
         awesomplete.list = groups;
     });
-
-
-
     $('form').submit(function(){
-
         $(adventurePrompt).append("<br>>>" + $('#myinput').val());
         if ( $('#myinput').val().toLowerCase() == "help"){
             $(adventurePrompt).append("<br>" + "This is a general self-help website designed for IMA in the style of a text-based adventure game. Just start typing and the auto-complete can give you suggestions if you are unsure. Some useful commands are 'reset', which can be inputted as the shortcut 'r'. If you have a suggestion for new topics that can be covered, please submit one here: www.placeholder.gov" + "<br>");
         }
 
         else if( $('#myinput').val().toLowerCase() == "reset" || $('#myinput').val().toLowerCase() == "r" ){
-            $(adventurePrompt).append("<br>" + "'Hello again, do you have a different question?" + "Maybe about another group?'" + '<br>');
+            $(adventurePrompt).append("<br>" + "'Hello again, do you have a different question? " + "Maybe about another group?'" + '<br>');
             for ( var i = 0; i < flowChart.length; i++ ){
                 groups.push(flowChart[i].group);
             }
@@ -60,8 +55,6 @@ $(document).ready(function(){
         else if( isInArray($('#myinput').val().toLowerCase(), topics) == true){
             topic = $('#myinput').val().toLowerCase();
             $(adventurePrompt).append("<br>" + "'Ahh a question about " + topic + ".'" + "<br>");
-            console.log("group: " + group);
-            console.log("topic: " + topic);
             for( var i = 0; i < flowChart.length; i++){
                 if ( group == flowChart[i].group && topic == flowChart[i].topic){
                     if ( flowChart[i].names.length == 1 ){
@@ -95,15 +88,15 @@ $(document).ready(function(){
             awesomplete.list = [];
             topics = [];
             }
+            $(adventurePrompt).append("<br>If you have another question, type r and hit enter.");
         }else{
             $(adventurePrompt).append("<br>" + "I don't understand." + "<br>");
         }
+        //scroll to bottom
         adventurePrompt.scrollTop = adventurePrompt.scrollHeight;
         $('#myinput').val('');
         return false;
     });
-
-
 });
 
 function arrayDuplicateRemover(arr){

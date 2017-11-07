@@ -152,7 +152,7 @@ app.set('view engine', 'html');
 
 //Start the server listening on port 1337 (l33thaxxor)
 http.listen(1337, function(){
-  console.log("Server has started listening on PORT 1337 COMMANDAH!");
+  console.log("Server listening on port 1337");
   getAdventures();
 });
 
@@ -163,7 +163,7 @@ io.on('connection', function(socket){
   if ( flowChart.length == 0 ){
     console.log("No data found");
   }else{
-    console.log("The flowChart has been sent");
+    console.log("Data sent");
     io.emit('adventures', flowChart);
   }
   socket.on("disconnect",function(){
